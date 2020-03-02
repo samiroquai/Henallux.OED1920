@@ -1,0 +1,106 @@
+---*1920S01e1.1
+module(lireFiche;;fiche)
+do while(fiche!=NIL)
+module(RechercherJeu;fiche.nom,jeuxVideo,nbJeux;index)
+// pas de cas d'erreur � pr�voir
+module(RechercherOffre;jeuxVideo,index,fiche.prix;indexOffre)
+if(indexOffre<nbJeux)
+// d�calage � droite
+module(InsererOffre;nbOffres,jeuxVideo,index,indexOffre,fiche)
+endif
+module(lireFiche;;fiche)
+enddo
+------
+
+---*RechercherJeu(in: nom, jeuxVideo, nbJeux;out: index)
+//PRE: jeuxVideo contient nbJeux cellules initialis�es
+//POST: index = indice de la cellule qui devrait contenir le jeu dont le titre est �gal � la variable nom 
+index=0
+do while(index<nbJeux AND jeuxVideo[index]<nom)
+index++
+enddo
+------
+
+---*RechercherOffre(in: jeuxVideo, indexJeu,prix; out:indexOffre)
+indexOffre=0
+do while (indexOffre<nbOffres AND jeuxVideo[index][indexOffre].prix<prix)
+indexOffre++
+enddo
+-----
+
+---*InsererOffre(in: nbOffres, jeuxVideo, indexJeu, indexOffre, fiche;)
+indexDecalage=nbOffres-1
+do while(indexDecalage>indexOffre)
+jeuxVideo[indexJeu][indexDecalage]=jeuxVideo[indexJeu][indexDecalage-1]
+indexDecalage--
+enddo
+jeuxVideo[indexJeu][indexOffre].prix=fiche.prix
+jeuxVideo[indexJeu][indexOffre].nomMagasin=fiche.nomMagasin
+jeuxVideo[indexJeu][indexOffre].ville=fiche.ville
+------
+
+
+---*19S01e2.2
+module(lireFiche;;fiche)
+do while(fiche!=NIL)
+module(RechercherJeu;fiche.nom,jeuxVideo,nbJeux;index)
+// pas de cas d'erreur � pr�voir
+//d�calage � droite
+module(InsererJeu;index, jeuxVideo, nbJeux;nbJeux)
+module(lireFiche;;fiche)
+enddo
+------
+
+---*InsererJeu(in: index, jeuxVideo, nbJeux, fiche; out: nbJeux)
+indexDecalage = nbJeux
+do while(indexDecalage>index)
+jeuxVideo[indexdecalage]=jeuxVideo[indexdecalage-1]
+indexDecalage--
+enddo
+nbJeux++
+jeuxVideo[index].nom=fiche.nom
+jeuxVideo[index].categorie=fiche.categorie
+jeuxVideo[index].offres[0].prix=fiche.prix
+jeuxVideo[index].offres[0].magasin=fiche.magasin
+jeuxVideo[index].offres[0].ville=fiche.ville
+jeuxVideo[index].offres[1].prix=jeuxVideo[index].offres[2].prix=9999
+------
+
+---*19S01e2 SupprimerJeu(in: nomJeu, jeuxVideo, nbJeux; out: nbJeux)
+module(RechercherJeu;nomJeu,jeuxVideo,nbJeux;index)
+if(index<nbJeux AND jeuxVideo[index].nom==nomJeu)
+// decalage � gauche
+do while(index<nbJeux-1)
+jeuxVideo[index]=jeuxVideo[index+1]
+index++
+enddo
+else
+Sortir "Jeu inexistant"
+endif
+
+-----
+
+---*RechercherOffreParMagasin(in: jeuxVideo, indexJeu,nomMagasin; out:indexOffre)
+indexOffre=0
+do while (indexOffre<nbOffres AND jeuxVideo[index][indexOffre].nomMagasin!=nomMagasin)
+indexOffre++
+enddo
+-----
+---*19S01e03 SupprimerOffre(in: nomJeu, nomMagasin, ville, jeuxVideo, nbJeux)
+module(RechercherJeu;nomJeu,jeuxVideo,nbJeux;index)
+if(index<nbJeux AND jeuxVideo[index].nom==nomJeu)
+module(RechercherOffreParMagasin;jeuxVideo,index,nomMagasin;indexOffre)
+if(indexOffre<3 AND jeuxVideo[index].offres[indexOffre].nomMagasin==nomMagasin)
+do while(indexOffre<2)
+jeuxVideo[index].offres[indexOffre]=jeuxVideo[index].offres[indexOffre+1]
+indexOffre++
+enddo
+jeuxVideo[index].offres[2].prix=9999
+endif
+// sinon: le magasin n'�tait pas repris dans les meilleurs offres, rien � faire
+else
+Sortir "Jeu non-trouv�"
+endif
+
+
+------

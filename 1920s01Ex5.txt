@@ -1,0 +1,71 @@
+---*1920S01e5
+module(InitGenerale;;iOuvrier,iOuvrierAyantLePlusTravaille,maxHeuresPrestees, nbrClients)
+do while(iOuvrier<20)
+module(InitOuvrier;tabOuvriers,iOuvrier;nomOuvrierSauve,totalHeuresOuvrier)
+do while(iOuvrier<20 AND tabOuvriers[iOuvrier].nom=nomOuvrierSauve)
+module(TraitementOuvrier;tabOuvriers,iOuvrier;totalHeuresOuvrier)
+module(TraitementClient;tabOuvriers,iOuvrier,tabClients,nbrClients;tabClients,nbrClients)
+iOuvrier++
+enddo
+module(ClotureOuvrier;nomOuvrierSauve,totalHeuresOuvrier, iOuvrier, maxHeuresPrestees;maxHeuresPrestees,nomOuvrierAyantLePlusTravaille)
+enddo
+module(ClotureGenerale;tabOuvriers, nomOuvrierAyantLePlusTravaille;)
+-----
+
+---*InitGenerale
+iOuvrier=0
+iOuvrierAyantLePlusTravaille=0
+maxHeuresPrestees=LV
+nbrClients=0
+-----
+
+---*InitOuvrier
+nomOuvrierSauve=tabOuvriers[iOuvrier].nom
+totalHeuresOuvrier=0
+sortir nomOuvrierSauve
+-----
+
+---*TraitementOuvrier
+iJour=0
+nbrHeuresSemaine=0
+do while(iJour<5)
+nbrHeuresSemaine+=tabOuvriers[iOuvrier].tabJours[iJour]
+iJour++
+enddo
+totalHeuresOuvrier+=nbrHeuresSemaine
+Sortir tabOuvriers[iOuvrier].nomClient + " " +nbrHeuresSemaine
+-----
+
+---*TraitementClient
+module(RechercherClient;tabClients,nbrClients,tabOuvriers[iOuvrier].nomClient;iClient)
+if(iClient==nbrClients)
+tabClients[iClient].nom=tabOuvriers[iOuvrier].nomClient
+tabClients[iClient].nbrOuvriers=0
+nbrClients++
+endif
+tabClients[iClient].tabOuvriers[tabClients[iClient].nbrOuvriers].nom=nomOuvrierSauve
+tabClients[iClient].tabOuvriers[tabClients[iClient].nbrHeures].heures=tabOuvriers[iOuvrier].nbHeuresJour
+tabClients[iClient].nbrOuvriers++
+// fin
+-----
+
+---*RechercherClient
+// rechercher client
+iClient=0
+do while(iClient<nbcClients AND tabClients[i].nom!=nomClient)
+iClient++
+enddo
+-----
+
+---*ClotureOuvrier
+Sortir totalHeuresOuvrier
+if(totalHeuresOuvrier>maxHeuresPrestees)
+maxHeuresPrestees=totalHeuresOuvrier
+nomOuvrierAyantLePlusTravaille=nomOuvrierSauve
+endif
+------
+
+---*ClotureGenerale
+Sortir nomOuvrierAyantLePlusTravaille
+Sortir infos clients (tableau tabClients et son contenu)
+------
