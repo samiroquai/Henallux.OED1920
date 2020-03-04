@@ -1,5 +1,5 @@
 ---*1920s02Ex01
-pAchat:pDebut
+pAchat=pDebut
 do while(pAchat!=NIL)
 module(InitClient;pAchat;numCarteSauve,quantiteProduitLePlusAchete,refProduitLePlusAchete)
 do while(pAchat!=NIL AND pAchat->numCarte=numCarteSauve)
@@ -27,6 +27,7 @@ quantiteTotaleAcheteeArticleEnCours=0
 
 ---*TraitementArticle
 quantiteTotaleAcheteeArticleEnCours+=pAchat->quantite
+pAchat=pAchat->pSuiv
 ------
 
 ---*ClotureArticle
