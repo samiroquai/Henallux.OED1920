@@ -1,0 +1,94 @@
+---*1920s02Ex3.a (in: pDebutSalles; out: pDebutSalles)
+pSalle=pDebutSalles
+pSallePrec=NIL
+do while (pSalle!=NIL)
+pSallePrec=pSalle
+pSalle=pSalle->pSuiv
+enddo
+allouer mémoire pour chainon pNouvSalle
+pNouvSalle->pSuiv=NIL
+if(pSallePrec==NIL)
+pDebutSalles=pNouvSalle
+pNouvSalle.Numero=0
+else
+pSallePrec->pSuiv=pNouvSalle
+pNouvSalle.Numero=pSallePrec->numero+1
+endif
+------
+
+---*RechercherSalle(in: pDebutsalles, numeroSalle; out: pSalle, pSallePrec)
+pSalle=pDebutSalles
+pSallePrec=NIL
+do while (pSalle!=NIL AND pSalle->numeroSalle<numeroSalle)
+pSallePrec=pSalle
+pSalle=pSalle->pSuiv
+enddo
+------
+
+---*1920s02Ex3.b (in: pDebutSalles, numeroSalle, titreOeuvre, referenceOeuvre;out:)
+module(RechercherSalle;pDebutSalles,numeroSalle;pSalle)
+if(psalle==NIL OR pSalle->Numero!=numeroSalle)
+afficher "Salle inexistante"
+else
+pOeuvre=pSalle->pDebutOeuvres
+pOeuvrePrec=NIL
+do while (pOeuvre!=NIL AND pOeuvre->reference<referenceOeuvre)
+pOeuvrePrec=pOeuvre
+pOeuvre=pOeuvre->pOeuvreSuiv
+enddo
+if(pOeuvre!=NIL AND pOeuvre->reference==referenceOeuvre)
+afficher "Oeuvre déjà existante"
+else
+allouer mémoire chainon pNouvOeuvre
+if(pNouvOeuvre==NIL)
+afficher "plus de place mémoire"
+else
+pNouvOeuvre->reference=referenceOeuvre
+pNouvOeuvre->titre=titreOeuvre
+pNouvOeuvre->pSuiv=pOeuvre
+if(pOeuvrePrec=NIL)
+pSalle->pDebutOeuvres=pNouvOeuvre
+else
+pOeuvrePrec->pSuiv=pNouvOeuvre
+endif
+endif
+endif
+endif
+------
+
+---*1920s02Ex03.C (in: pDebutSalles, numeroSalle;out: pDebutSalles)
+module(RechercherSalle;pDebutSalles,numeroSalle;pSalles, pSallePrec)
+if(psalle==NIL OR pSalle->Numero!=numeroSalle)
+afficher "Salle inexistante"
+else
+pOeuvre=pSalle->pDebutOeuvres
+do while(pOeuvre!=NIL)
+pTmpOeuvre=pOeuvre->psuiv
+Libérer pOeuvre
+pOeuvre=pTmpOeuvre
+enddo
+if(pSallePrec=NIL)
+pDebutSalles=pSalle->pSuiv
+else
+pSallePrec->pSuiv=pSalle->pSuiv
+endif
+Libérer pSalle
+endif
+
+pOeuvre=pSalle->pDebutOeuvres
+do while (pOeuvre!=NIL)
+pOeuvrePrec=pOeuvre
+pOeuvre=pOeuvre->pSuiv
+Liberer pOeuvrePrec
+enddo
+-----
+
+
+---*1920s02Ex03.C (in: pSalle)
+pOeuvre=pSalle->pDebutOeuvres
+do while (pOeuvre!=NIL)
+pOeuvreTmp=pOeuvre->pSuiv
+Liberer chainon pointé par pOeuvre
+pOeuvre=pOeuvreTmp
+enddo
+-----
