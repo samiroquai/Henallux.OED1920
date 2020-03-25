@@ -1,0 +1,128 @@
+// -----------------------------------------------
+// CORRECTIF
+// -----------------------------------------------
+//
+// QUESTION 1
+
+---*dateFinLocation(in: clients, nbClients, numCli, refMat;out: dateFinLocation, erreur)
+i=0
+erreur=nil
+do while (i<nbClients && clients[i].numero<numCli)
+i++
+enddo
+if(i==nbClients || clients[i].numero>numCli)
+erreur = "Client introuvable"
+else
+pMat=clients[i].pDebLocations
+do while (pMat!=NIL AND pMat->reference<refMat)
+pMat=pMat->pSuiv
+enddo
+if(pMat==NIL OR pMat->reference>refMat)
+erreur="location introuvable"
+else
+dateFinLocation=pMAt->dateFin
+endif
+endif
+------
+
+// QUESTION 2
+
+---*suppressionRestitution(in: pDebRest, numClient, refMat;out: pDebRest)
+pRest=pDebRest
+pRestPrec=NIL
+do while (pRest!=NIL AND pRest->numClient!=numClient AND pRest->reference!=refMAt)
+pRestPrec=pRest
+pRest=pRest->pSuiv
+enddo
+if(pRest!=NIL)
+if(pRestPrec=NIL)
+pDebRest=pRest->pSuiv
+else
+pRestPrec->pSuiv=pRest->pSuiv
+endif
+libérer pRest
+endif
+------
+
+// QUESTION 3
+
+module(traitementRestitution;dateJour,numéroClient,référence, pDebutRestitutions, pDebutRetards, clients, nbClients;pDebutRestitutions, pDebutRetards)
+---*
+module(ajoutRestitution;numéroClient, référence, pDebutRestitutions;pDebutRestitutions)
+
+module(dateFinLocation;clients, nbClients, numéroClient, référence;dateFin, message)
+
+if (message == NIL)
+
+if (dateFin < dateJour)
+
+pRetard = pDébutRetards
+do while (pRetard != null and numéroClient > pRetard -> numClient)
+pRetardPrec = pRetard
+pRetard = pRetard -> pSuiv
+enddo
+
+if (pRetard==NIL OR  numéroClient < p -> numClient)
+// passer les infos du client
+module(ajoutChainonRetard;numéroClient,pRetard,pRetardPrec,pDebutRetards,reference;pDebutRetards)
+else
+// ajouter matériel au chaînon
+pRetard.materiels[pRetard.nbMateriels]=référence
+pRetard.nbMateriels++
+endif
+endif
+endif
+------
+
+
+
+module(ajoutRestitution;numClient, référence, pDebutRestitutions;pDebutRestitutions)
+
+---*
+// positionnement en fin de chaîne des restitutions
+pRest = pDébutRestitutions
+pRestPrec=NIL
+do while ( pRest  != null)
+pRestPrec=pRest
+pRest = pRest  -> pSuiv
+enddo
+
+pNouv = adresse mémoire nouveau chainon
+pNouv -> numClient = numClient
+pNouv -> référence = référence
+pNouv -> pSuiv = null
+
+if( pDébutRestitutions == null)
+
+pDébutRestitutions = pNouv
+else
+
+ pRestPrec -> pSuiv = pNouv
+endif
+------
+
+
+
+
+module(ajoutChainonRetard;numéroClient,pRetard,pRetardPrec,pDebutRetards,référence;pDebutRetards)
+---*
+pNouv = adresse mémoire nouveau chainon
+pNouv -> numClient = numéroClient
+pNouv -> nbMatériels = 1
+matériels[0] = référence
+pNouv -> pSuiv = pRetard
+
+if ( pRetard == pDébutRetards)
+pNouv -> pPrec = null
+if(pDebutRetards!=NIL)
+pDébutRetards -> pPrec = pNouv
+endif
+pDébutRetards = pNouv
+else
+pRetard -> pSuiv = pNouv
+pNouv -> pPrec = pRetard
+if(pRetard!=NIL)
+pRetard -> pPrec = pNouv
+endif
+endif
+------

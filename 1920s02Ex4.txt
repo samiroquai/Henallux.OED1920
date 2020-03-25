@@ -1,0 +1,181 @@
+---*1920S02Ex4 - RechercheEmprunteur(in: emprunteur, pDebutEmprunteurs; out:pEmprunteur, pEmprunteurPrec)
+pEmprunteur=pDebutEmprunteurs
+do while (pEmprunteur==NIL AND pEmprunter->emprunteur<emprunteur)
+pEmprunteurPrec=pEmprunteur
+pEmprunteur=pEmprunteur->pSuiv
+enddo
+------
+
+---*1920S02Ex4 - RechercherEmprunt(in: pDebutEmprunts, titre; out:pEmprunt, pEmpruntPrec)
+pEmprunt=pDebutEmprunts
+do while (pEmprunt==NIL AND pEmprunter->titre!=titre)
+pEmpruntPrec=pEmprunt
+pEmprunt=pEmprunt->pLivreSuiv
+enddo
+------
+
+---*1920S02Ex4 - RechercherEmpruntParDateFin(in: pDebutEmprunts, dateFin; out:pEmprunt, pEmpruntPrec)
+pEmprunt=pDebutEmprunts
+do while (pEmprunt==NIL AND pEmprunter->dateFinEmprunt<dateFin)
+pEmpruntPrec=pEmprunt
+pEmprunt=pEmprunt->pLivreSuiv
+enddo
+------
+
+---*1920S02Ex4 - AjouterEmprunteur(in: emprunteur, pDebutEmprunteurs, pEmprunteur, pEmprunteurPrec;out: pEmprunteur, pDebutEmprunteurs, codeErreur)
+codeErreur=0
+Allouer mémoire chainon pNouvEmprunteur
+if(pNouvEmprunteur==NIL)
+codeErreur=5
+else
+pNouvEmprunteur->pPrec=pEmprunteurPrec
+pNouvEmprunteur->pSuiv=pEmprunteur
+if(pEmprunteurPrec==NIL)
+// ajout en début de liste
+pDebutEmprunteurs=pNouvEmprunteur
+else
+// ajout en fin/milieu de liste
+pEmprunteurPrec->pSuiv = pNouvEmprunteur
+endif
+if(pEmprunteur!=NIL)
+pEmprunteur->pPrec=pNouvEmprunteur
+endif
+endif
+------
+
+
+---*1920S02Ex4 - RetourLivre (in: emprunteur, titre, pDebutEmprunteurs;out: codeErreur)
+codeErreur=0
+module(RechercheEmprunteur;emprunteur, pDebutEmprunteurs;pEmprunteur, pEmprunteurPrec)
+if(pEmprunteur==NIL OR pEmprunteur->emprunteur!=emprunteur)
+codeErreur=2
+else
+module(RechercheEmprunt;pEmprunteur->pDebLivres, titre;pEmprunt, pEmpruntPrec)
+if(pEmprunt==NIL OR pEmprunt->titre!=titre)
+codeErreur=2
+else
+if(pEmpruntPrec!=NIL)
+// suppression en milieu/fin de liste
+pEmpruntPrec->pLivreSuiv=pEmprunt->pLivreSuiv
+else
+// suppression en début de liste
+pEmprunteur->pDebLivres=pEmprunt->pLivreSuiv
+endif
+Libérer pEmprunt
+endif
+endif
+------
+
+---*1920S02Ex4 - EmpruntLivre(in: emprunteur, titre, dateFinEmprunt, pDebutEmprunteurs;out: pDebutEmprunteurs, codeErreur)
+codeErreur=0
+module(RechercheEmprunteur;emprunteur, pDebutEmprunteurs;pEmprunteur, pEmprunteurPrec)
+if(pEmprunteur==NIL OR pEmprunteur->emprunteur!=emprunteur)
+module(AjouterEmprunteur;emprunteur, pDebutEmprunteurs, pEmprunteur, pEmprunteurPrec;pEmprunteur, pDebutEmprunteurs, codeErreur)
+endif
+if(codeErreur==0)
+module(RechercheEmprunt;pEmprunteur->pDebLivres, titre;pEmprunt, pEmpruntPrec)
+if(pEmprunt!=NIL AND pEmprunt->titre==titre)
+codeErreur=1
+else
+Allouer mémoire chainon pNouvEmprunt
+if(pNouvEmprunt==NIL)
+CodeErreur=5
+else
+pNouvEmprunt->titre=titre
+pNouvEmprunt->dateFinEmprunt=dateFinEmprunt
+// l'emprunteur n'a pas encore emprunté le livre. Mais il faut rechercher où se placer pour l'insertion de l'emprunt
+module(RechercheEmpruntParDateFin;pEmprunteur->pDebLivres, dateFinEmprunt;pEmprunt, pEmpruntPrec)
+pNouvEmprunt->pLivreSuiv=pEmprunt
+if(pEmpruntPrec==NIL)
+// ajout en début de liste
+pEmprunteur->pDebEmprunt=pNouvEmprunt
+else
+// ajout en fin/milieu de liste
+pEmpruntPrec->pLivreSuiv=pNouvEmprunt
+endif
+endif
+endif
+endif
+------
+
+---*1920S02Ex4 - ProlongationEmprunt(in: emprunteur, titre, dateFinEmprunt, pDebutEmprunteurs;out: codeErreur)
+codeErreur=0
+module(RechercheEmprunteur;emprunteur, pDebutEmprunteurs;pEmprunteur, pEmprunteurPrec)
+if(pEmprunteur==NIL OR pEmprunteur->emprunteur!=emprunteur)
+codeErreur=3
+else
+module(RechercheEmprunt;pEmprunteur->pDebLivres, titre;pEmprunt, pEmpruntPrec)
+if(pEmprunt==NIL OR pEmprunt->titre!=titre)
+codeErreur=3
+else
+if(pEmprunt->dateFinEmprunt>dateFinEmprunt)
+codeErreur=4
+else
+// on recommence la recherche à partir de là où on a trouvé l'emprunt puisque c'est trié par date de fin croissante et que la nouvelle date de fin doit être supérieure à la date de fin précédemment renseignée.
+module(RechercheEmpruntParDateFin;pEmprunt, dateFinEmprunt;pDestinationEmprunt, pDestinationEmpruntPrec)
+if(pEmprunt!=pDestinationEmpruntPrec)
+// pas besoin de bouger quoi que ce soit si les chainons sont équivalents
+if(pEmpruntPrec!=NIL)
+pEmprunteur->pDebLivres=pEmprunt->pLivreSuiv
+else
+pEmpruntPrec->pLivreSuiv=pEmprunt->pLivreSuiv
+endif
+// il y a forcément un chainon précédent puisqu'on s'est déplacé vers la droite (vers test sur pEmprunt!=pDestinationEmpruntPrec)
+pDestinationEmpruntPrec->pLivreSuiv=pEmprunt
+pEmprunt->pLivreSuiv=pDestinationEmprunt
+endif
+endif
+endif
+endif
+------
+
+---*1920S02Ex4 - AffichageRetards(in: dateJour, pDebutEmprunteurs;out: codeErreur)
+codeErreur=0
+pDebutRetard=NIL
+pEmprunteur=pDebutEmprunteurs
+do while(pEmprunteur!=NIL)
+pEmprunt=pEmprunteur->pDebLivres
+int nbrLivresRetard=0
+tabLivresRetard=[]
+do while(pEmprunt!=NIL AND pEmprunt->dateFinEmprunt<dateJour)
+nbrLivresRetard++
+tabLivresRetard[nbrLivresRetard-1]=pEmprunt->titre
+enddo
+if(nbrLivresEnRetard>0)
+Allouer mémoire nouveau chainon pNouvRetard
+if(pNouvRetard==NIL)
+codeErreur=5
+else
+pNouvRetard->nbrRetards=nbrLivresRetard
+pNouvRetard->nomEmprunteur=pEmprunteur->emprunteur
+pNouvRetard->livresEnRetard=tabLivresRetard
+pRetard=pDebutRetard
+pRetardPrec=NIL
+do while (pRetard!=NIL AND pRetard->nbrRetards>pNouvRetard->nbrRetards)
+pRetardPrec=pRetard
+pRetard=pRetard->pSuiv
+enddo
+if(pRetardPrec=NIL)
+pDebutDetard=pNouvRetard
+else
+pRetardPrec->pSuiv=pNouvRetard
+endif
+pNouvRetard->pSuiv=pRetard
+endif
+endif
+enddo
+
+if(codeErreur==0)
+// boucle d'affichage
+pRetard=pDebutRetard
+do while(pRetard!=NIL)
+Afficher pRetard->nomEmprunteur + " a " + pRetard->nbrRetards+" emprunts en retard de restitution"
+iRetard=0
+do while(iRetard<pRetard->nbrRetards)
+Afficher pRetard->tabLivresRetard[i]
+iRetard++
+enddo
+pRetard=pRetard->pSuiv
+enddo
+endif
+------
